@@ -86,9 +86,8 @@ public:
 				e.controller->poll(&e.transform, &e.rigidbody, dt);
 				if (e.controller->shotRequest) // controller requested a bullet fire
 				{
-					e.transform->setDirection(e.transform->getGlobalPosition());
 					factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition()  + e.transform->getGlobalUp()*48,
-											vec2{ 32,32 }, e.transform->getDirection(), 200, 1, true);
+											vec2{ 32,32 }, e.transform->facing(e.transform->getGlobalPosition(), e.transform->getGlobalPosition() * it->controller->speed), 200, 1, true);
 				}
 			}
 			// lifetime decay update
@@ -121,7 +120,7 @@ public:
 				// if they aren't the same and they both have collidable bits...
 				{
 					if (it->transform->isPlayer == true && bit->transform->isPlayer == true)
-						break;
+						break; // if the objects are both either the player and/or player created objects, ignore collision
 					// test their bounding boxes
 					if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
 					{

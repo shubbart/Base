@@ -120,22 +120,24 @@ public:
 	vec2 getGlobalScale()		const { return getGlobalTransform().getScale2D(); }
 	float	   getGlobalAngle()		const { return getGlobalTransform().getAngle2D(); }
 
-	vec2 fromAngle(float a)
+
+
+	float angle(const vec2 &v)
 	{
-		return vec2{ cos(a), sin(a) };
+		return atan2f(v.y, v.x);
 	}
 
-
-	void setDirection(const vec2 &dir)
+	float facing(const vec2 &v1, const vec2 &v2)
 	{
-		m_facing = atan2f(getGlobalPosition().y, getGlobalPosition().x);
-	}
+		vec2 retval;
+		retval.x = (v1.x / sqrt((v2.x - v1.x) * (v2.x - v1.x) +
+			(v2.y - v1.y) * (v2.y - v1.y)));
+		retval.y = (v1.x / sqrt((v2.x - v1.x) * (v2.x - v1.x) +
+			(v2.y - v1.y) * (v2.y - v1.y)));
 
-	float getDirection() 
-	{
-		return angleBetween(getGlobalPosition().x, getGlobalPosition().y);
+		return rad2deg(angle(retval));
 	}
-
+	
 	vec2 normal(const vec2 & v)
 	{
 		vec2 retval;
@@ -145,14 +147,15 @@ public:
 
 		return retval;
 	}
-	float dotProd(const vec2 & lhs, const vec2 & rhs)
+
+	float deg2rad(float deg)
 	{
-		return lhs.x * rhs.x + lhs.y * rhs.y;
+		return deg * PI / 180;
 	}
 
-	float angleBetween(const vec2 & lhs, const vec2 & rhs)
+	float rad2deg(float rad)
 	{
-		return acos(dotProd(normal(lhs), normal(rhs)));
+		return rad * 180 / PI;
 	}
 
 
