@@ -54,7 +54,7 @@ public:
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnBullet(unsigned sprite, vec2 pos, vec2 dim, float ang, float impulse, unsigned faction)
+	ObjectPool<Entity>::iterator spawnBullet(unsigned sprite, vec2 pos, vec2 dim, float ang, float impulse, unsigned faction, bool isPlayer = true)
 	{
 		auto e = entities.push();
 
@@ -74,11 +74,16 @@ public:
 		e->rigidbody->addImpulse(e->transform->getGlobalUp() * impulse);
 
 		e->lifetime->lifespan = 1.6f;
+		if (isPlayer == true)
+		{
+			e->transform->setPlayer();
+		}
+
 		
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite, unsigned font)
+	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite, unsigned font, bool isPlayer = true)
 	{
 		auto e = entities.push();
 
@@ -97,7 +102,10 @@ public:
 		e->transform->setLocalScale(vec2{48,48});
 
 		e->sprite->sprite_id = sprite;
-
+		if (isPlayer == true)
+		{
+			e->transform->setPlayer();
+		}
 		return e;
 	}
 

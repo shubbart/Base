@@ -16,6 +16,7 @@ private:
 	vec2  m_localPosition;
 	vec2  m_localScale;
 	float m_localAngle;
+	float m_facing;
 
 
 	void keepGlobalTransform(Transform *oldParent, Transform *newParent)
@@ -29,7 +30,14 @@ private:
 		m_localScale	= res.getScale2D();
 		m_localAngle	= res.getAngle2D();
 	}
+
 public:
+	bool isPlayer = false;
+	void setPlayer()
+	{
+		isPlayer = true;
+	}
+	
 	void draw(const mat3 &cam) const
 	{
 		auto t = cam * getGlobalTransform();
@@ -102,7 +110,6 @@ public:
 													   * mat3::scale(m_localScale);
 												}
 
-	
 	void setGlobalPosition(const vec2 &P) { m_localPosition = (getGlobalToLocal() * vec3(P, 1)).xy; }
 	void setGlobalScale(const vec2 &S)    { m_localScale    = (getGlobalToLocal() * vec3(S, 0)).xy; }
 	void setGlobalAngle(float a)				{ m_localAngle    = (getGlobalToLocal() * vec3(vec2::fromAngle(a),0)).xy.angle(); }
@@ -112,6 +119,41 @@ public:
 	vec2 getGlobalPosition()  const { return getGlobalTransform().getTrans2D(); }
 	vec2 getGlobalScale()		const { return getGlobalTransform().getScale2D(); }
 	float	   getGlobalAngle()		const { return getGlobalTransform().getAngle2D(); }
+
+	vec2 fromAngle(float a)
+	{
+		return vec2{ cos(a), sin(a) };
+	}
+
+
+	void setDirection(const vec2 &dir)
+	{
+		m_facing = atan2f(getGlobalPosition().y, getGlobalPosition().x);
+	}
+
+	float getDirection() 
+	{
+		return angleBetween(getGlobalPosition().x, getGlobalPosition().y);
+	}
+
+	vec2 normal(const vec2 & v)
+	{
+		vec2 retval;
+
+		retval.x = v.x / sqrt(v.x * v.x + v.y * v.y);
+		retval.y = v.y / sqrt(v.x * v.x + v.y * v.y);
+
+		return retval;
+	}
+	float dotProd(const vec2 & lhs, const vec2 & rhs)
+	{
+		return lhs.x * rhs.x + lhs.y * rhs.y;
+	}
+
+	float angleBetween(const vec2 & lhs, const vec2 & rhs)
+	{
+		return acos(dotProd(normal(lhs), normal(rhs)));
+	}
 
 
 	mat3 getGlobalTransform() const { return getLocalToGlobal() * getLocalTransform(); }

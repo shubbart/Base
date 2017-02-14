@@ -19,15 +19,18 @@
 class GameState : public BaseState
 {
 	Factory factory;
-	unsigned spr_space, spr_ship, spr_bullet, spr_roid, spr_font;
+	unsigned spr_space, spr_player, spr_cast, spr_death, spr_bullet, spr_roid, spr_font;
 	ObjectPool<Entity>::iterator currentCamera;
+
 
 public:
 	virtual void init()
 	{
 		spr_bullet = sfw::loadTextureMap("../res/bullet.png");
 		spr_space = sfw::loadTextureMap("../res/space.jpg");
-		spr_ship = sfw::loadTextureMap("../res/ship.png");
+		spr_player = sfw::loadTextureMap("../res/player.png", 3, 4);
+		spr_cast = sfw::loadTextureMap("../res/cast.png", 9, 4);
+		spr_death = sfw::loadTextureMap("../res/death.png");
 		spr_roid = sfw::loadTextureMap("../res/rock.png");
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
 	}
@@ -44,7 +47,7 @@ public:
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, 0, 800, 600);
 
-		factory.spawnPlayer(spr_ship, spr_font);
+		factory.spawnPlayer(spr_player, spr_font, true);
 		factory.spawnAsteroid(spr_roid);
 		factory.spawnAsteroid(spr_roid);
 		factory.spawnAsteroid(spr_roid);
@@ -83,8 +86,9 @@ public:
 				e.controller->poll(&e.transform, &e.rigidbody, dt);
 				if (e.controller->shotRequest) // controller requested a bullet fire
 				{
+					e.transform->setDirection(e.transform->getGlobalPosition());
 					factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition()  + e.transform->getGlobalUp()*48,
-											vec2{ 32,32 }, e.transform->getGlobalAngle(), 200, 1);
+											vec2{ 32,32 }, e.transform->getDirection(), 200, 1, true);
 				}
 			}
 			// lifetime decay update
@@ -102,6 +106,8 @@ public:
 				it->onFree();
 				it.free();
 			}
+
+
 		}
 
 
@@ -114,6 +120,8 @@ public:
 				if (it != bit && it->transform && it->collider && bit->transform && bit->collider)
 				// if they aren't the same and they both have collidable bits...
 				{
+					if (it->transform->isPlayer == true && bit->transform->isPlayer == true)
+						break;
 					// test their bounding boxes
 					if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
 					{
