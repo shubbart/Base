@@ -120,15 +120,9 @@ public:
 	vec2 getGlobalScale()		const { return getGlobalTransform().getScale2D(); }
 	float	   getGlobalAngle()		const { return getGlobalTransform().getAngle2D(); }
 
-	vec2 fromAngle(float a)
+	/*vec2 fromAngle(float a)
 	{
 		return vec2{ cos(a), sin(a) };
-	}
-
-
-	void setDirection(const vec2 &dir)
-	{
-		m_facing = atan2f(getGlobalPosition().y, getGlobalPosition().x);
 	}
 
 	float getDirection() 
@@ -153,7 +147,7 @@ public:
 	float angleBetween(const vec2 & lhs, const vec2 & rhs)
 	{
 		return acos(dotProd(normal(lhs), normal(rhs)));
-	}
+	}*/
 
 
 	mat3 getGlobalTransform() const { return getLocalToGlobal() * getLocalTransform(); }

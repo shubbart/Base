@@ -86,9 +86,9 @@ public:
 				e.controller->poll(&e.transform, &e.rigidbody, dt);
 				if (e.controller->shotRequest) // controller requested a bullet fire
 				{
-					e.transform->setDirection(e.transform->getGlobalPosition());
+					
 					factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition()  + e.transform->getGlobalUp()*48,
-											vec2{ 32,32 }, e.transform->getDirection(), 200, 1, true);
+											vec2{ 32,32 }, e.transform->getGlobalAngle(), 200, 1, true);
 				}
 			}
 			// lifetime decay update
