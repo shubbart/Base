@@ -19,5 +19,10 @@ namespace base
 		{
 			return mat3::translate(offset) * mat3::scale(scale) * T->getGlobalTransform().inverse();
 		}
+
+		vec2 getScreenPointToWorldPoint(const Transform *T, const vec2& S)
+		{
+			return (getCameraMatrix(T).inverse() * vec3 { S, 1 }).xy;
+		}
 	};
 }

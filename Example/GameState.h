@@ -19,24 +19,33 @@
 class GameState : public BaseState
 {
 	Factory factory;
-	unsigned spr_space, spr_player, spr_cast, spr_death, spr_bullet, spr_roid, spr_font;
+	unsigned spr_space, spr_player, spr_cast, spr_death, spr_fireball, spr_roid, spr_font, spr_mouse,
+			 spr_portal, spr_imp;
 	ObjectPool<Entity>::iterator currentCamera;
 
 
 public:
 	virtual void init()
 	{
-		spr_bullet = sfw::loadTextureMap("../res/bullet.png");
+		spr_fireball = sfw::loadTextureMap("../res/fireball.png",8,8);
 		spr_space = sfw::loadTextureMap("../res/space.jpg");
 		spr_player = sfw::loadTextureMap("../res/player.png", 3, 4);
 		spr_cast = sfw::loadTextureMap("../res/cast.png", 9, 4);
 		spr_death = sfw::loadTextureMap("../res/death.png");
 		spr_roid = sfw::loadTextureMap("../res/rock.png");
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
+		spr_mouse = sfw::loadTextureMap("../res/target.png");
+		spr_portal = sfw::loadTextureMap("../res/portal.png");
+		spr_imp = sfw::loadTextureMap("../res/imp.png",4,4);
 	}
 
 	virtual void play()
 	{
+		// Entity stats
+		float impSpd = 50;
+		float impHP = 10;
+		float impRange = 5;
+
 		// delete any old entities sitting around
 		for (auto it = factory.begin(); it != factory.end(); it->onFree(), it.free());
 
@@ -46,12 +55,17 @@ public:
 
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, 0, 800, 600);
-
+		
 		factory.spawnPlayer(spr_player, spr_font, true);
+	
 		factory.spawnAsteroid(spr_roid);
 		factory.spawnAsteroid(spr_roid);
 		factory.spawnAsteroid(spr_roid);
 		factory.spawnAsteroid(spr_roid);
+		factory.spawnImp(spr_imp, impSpd, impHP, impRange);
+		factory.spawnImp(spr_imp, impSpd, impHP, impRange);
+
+		factory.spawnTransform({ 0,0 });
 	}
 
 	virtual void stop()
@@ -68,14 +82,14 @@ public:
 	virtual void step()
 	{
 		float dt = sfw::getDeltaTime();
-
+		
 		// maybe spawn some asteroids here.
 
 		for(auto it = factory.begin(); it != factory.end();) // no++!
 		{
 			bool del = false; // does this entity end up dying?
 			auto &e = *it;    // convenience reference
-
+			
 			// rigidbody update
 			if (e.transform && e.rigidbody)
 				e.rigidbody->integrate(&e.transform, dt);
@@ -83,13 +97,49 @@ public:
 			// controller update
 			if (e.transform && e.rigidbody && e.controller)
 			{
+				e.controller->mouse = e.controller->getMouse(); // update mouse
+
 				e.controller->poll(&e.transform, &e.rigidbody, dt);
 				if (e.controller->shotRequest) // controller requested a bullet fire
+					{
+					vec2 screenMouse = { sfw::getMouseX(), sfw::getMouseY() };
+					vec2 worldMouse = currentCamera->camera->getScreenPointToWorldPoint(&currentCamera->transform, screenMouse);
+
+					vec2 firingVel = (worldMouse - e.transform->getGlobalPosition()).normal() * 200;
+
+					factory.spawnFireball(spr_fireball, e.transform->getGlobalPosition(),
+						vec2{ 32,32 }, firingVel.angle(), firingVel, 1, true);
+					}
+				/*if(sfw::getKey('W') && !sfw::getKey('D') && !sfw::getKey('A'))
+					// && e.rigidbody->velocity.y > 0 
+				if (e.controller->shotRequest) // controller requested a bullet fire
 				{
-					factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition()  + e.transform->getGlobalUp()*48,
-											vec2{ 32,32 }, e.transform->facing(e.transform->getGlobalPosition(), e.transform->getGlobalPosition() * it->controller->speed), 200, 1, true);
+					factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition(),
+									vec2{ 32,32 }, e.transform->deg2rad(0), 200, 1, true);
 				}
+				if (sfw::getKey('S')  && !sfw::getKey('D') && !sfw::getKey('A'))
+					//&& e.rigidbody->velocity.y < 0
+					if (e.controller->shotRequest) // controller requested a bullet fire
+					{
+						factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition(),
+							vec2{ 32,32 }, e.transform->deg2rad(180), 200, 1, true);
+					}
+				if (sfw::getKey('D'))
+					// && e.rigidbody->velocity.x > 0
+					if (e.controller->shotRequest) // controller requested a bullet fire
+					{
+						factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition(),
+							vec2{ 32,32 }, e.transform->deg2rad(270), 200, 1, true);
+					}
+				if (sfw::getKey('A') && !sfw::getKey('D'))
+					// && e.rigidbody->velocity.x < 0
+					if (e.controller->shotRequest) // controller requested a bullet fire
+					{
+						factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition(),
+							vec2{ 32,32 }, e.transform->deg2rad(90), 200, 1, true);
+					}*/
 			}
+
 			// lifetime decay update
 			if (e.lifetime)
 			{
@@ -107,6 +157,21 @@ public:
 			}
 
 
+		}
+
+		// AI
+		for (auto it = factory.begin(); it != factory.end(); it++)
+		{
+			for (auto bit = it; bit != factory.end(); bit++)
+			{
+				if(it != bit && it->enemy && bit->transform)
+				{
+					bool del = false;
+
+					it->enemy->poll(it->transform, it->rigidbody, bit->transform, dt);
+					
+				}
+			}
 		}
 
 
@@ -141,6 +206,13 @@ public:
 					}
 				}
 
+
+		// DEBUGGING
+		vec2 screenMouse = { sfw::getMouseX(), sfw::getMouseY() };
+		vec2 worldMouse  = currentCamera->camera->getScreenPointToWorldPoint(&currentCamera->transform, screenMouse);
+
+		std::cout << "mouse scrrn pos: " << screenMouse.x << "," << screenMouse.y << "\n";
+		std::cout << "mouse world pos: " << worldMouse.x << "," << worldMouse.y << "\n";
 	}
 
 
@@ -148,6 +220,7 @@ public:
 	{
 		// kind of round about, but this is the camera matrix from the factory's current camera
 		auto cam = currentCamera->camera->getCameraMatrix(&currentCamera->transform);
+		
 
 		// draw sprites
 		for each(auto &e in factory)
@@ -158,7 +231,7 @@ public:
 		for each(auto &e in factory)
 			if (e.transform && e.text)
 				e.text->draw(&e.transform, cam);
-
+		sfw::drawTexture(spr_mouse, sfw::getMouseX(), sfw::getMouseY(), 25, 25, 0.f, true, 0U, RED);
 
 #ifdef _DEBUG
 		for each(auto &e in factory)
@@ -172,6 +245,8 @@ public:
 		for each(auto &e in factory)
 			if (e.transform && e.rigidbody)
 				e.rigidbody->draw(&e.transform, cam);
+
+
 #endif
 	}
 };

@@ -2,6 +2,7 @@
 
 #include "compdef.h"
 #include <iostream>
+#include "Base.h"
 
 
 
@@ -120,45 +121,10 @@ public:
 	vec2 getGlobalScale()		const { return getGlobalTransform().getScale2D(); }
 	float	   getGlobalAngle()		const { return getGlobalTransform().getAngle2D(); }
 
+	float deg2rad(float deg) { return deg * PI / 180; }
 
-
-	float angle(const vec2 &v)
-	{
-		return atan2f(v.y, v.x);
-	}
-
-	float facing(const vec2 &v1, const vec2 &v2)
-	{
-		vec2 retval;
-		retval.x = (v1.x / sqrt((v2.x - v1.x) * (v2.x - v1.x) +
-			(v2.y - v1.y) * (v2.y - v1.y)));
-		retval.y = (v1.x / sqrt((v2.x - v1.x) * (v2.x - v1.x) +
-			(v2.y - v1.y) * (v2.y - v1.y)));
-
-		return rad2deg(angle(retval));
-	}
+	float rad2deg(float rad) { return rad * 180 / PI; }
 	
-	vec2 normal(const vec2 & v)
-	{
-		vec2 retval;
-
-		retval.x = v.x / sqrt(v.x * v.x + v.y * v.y);
-		retval.y = v.y / sqrt(v.x * v.x + v.y * v.y);
-
-		return retval;
-	}
-
-	float deg2rad(float deg)
-	{
-		return deg * PI / 180;
-	}
-
-	float rad2deg(float rad)
-	{
-		return rad * 180 / PI;
-	}
-
-
 	mat3 getGlobalTransform() const { return getLocalToGlobal() * getLocalTransform(); }
 
 	// convert points in local space to global space, this is the parent's transform

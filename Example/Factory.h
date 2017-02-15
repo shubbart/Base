@@ -15,6 +15,7 @@ class Factory
 	ObjectPool<Camera>    cameras;
 	ObjectPool<Text>	  texts;
 	ObjectPool<PlayerController> controllers;
+	ObjectPool<Enemy> enemies;
 
 public:
 
@@ -26,7 +27,7 @@ public:
 	Factory(size_t size = 512)
 								: entities(size), transforms(size), rigidbodies(size),
 								  colliders(size), sprites(size), lifetimes(size),
-								  cameras(size), controllers(size), texts(size)
+								  cameras(size), controllers(size), texts(size), enemies(size)
 	{
 	}
 
@@ -54,7 +55,7 @@ public:
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnBullet(unsigned sprite, vec2 pos, vec2 dim, float ang, float impulse, unsigned faction, bool isPlayer = true)
+	ObjectPool<Entity>::iterator spawnFireball(unsigned sprite, vec2 pos, vec2 dim, float ang, vec2 impulse, unsigned faction, bool isPlayer = true)
 	{
 		auto e = entities.push();
 
@@ -70,8 +71,10 @@ public:
 
 		e->sprite->sprite_id = sprite;
 		e->sprite->dimensions = vec2{1.2f, 1.2f};
+		
 
-		e->rigidbody->addImpulse(e->transform->getGlobalUp() * impulse);
+		e->rigidbody->addImpulse(impulse);
+
 
 		e->lifetime->lifespan = 1.6f;
 		if (isPlayer == true)
@@ -126,6 +129,70 @@ public:
 		e->rigidbody->addSpin(rand01()*12-6);
 
 		e->sprite->sprite_id = sprite;
+
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnMouse(unsigned sprite_id)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->sprite = sprites.push();
+		e->sprite->tint = RED;
+		e->controller = controllers.push();
+		e->transform->setLocalScale( vec2{25,25});
+		e->sprite->sprite_id = sprite_id;
+
+
+		return e;
+
+	}
+
+	ObjectPool<Entity>::iterator spawnPortal(unsigned sprite_id)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->sprite = sprites.push();
+		e->controller = controllers.push();
+		e->transform->setLocalScale(vec2{ 25,25 });
+		e->sprite->sprite_id = sprite_id;
+
+
+		return e;
+
+	}
+
+	ObjectPool<Entity>::iterator spawnImp(unsigned sprite, float speed, float health, float range)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->collider = colliders.push();
+		e->enemy = enemies.push();
+		e->transform->setLocalScale(vec2{ 30,40 });
+		e->transform->setGlobalPosition(vec2::fromAngle(randRange(0, 360)*DEG2RAD)*(rand01() * 200 + 64));
+
+		e->sprite->sprite_id = sprite;
+		e->enemy->speed = speed;
+		e->enemy->health = health;
+		e->enemy->range = range;
+
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnTransform(vec2 pos, vec2 dims = {10,10}, float rot = 0)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+
+		e->transform->setGlobalPosition(pos);
+		e->transform->setGlobalScale(dims);
+		e->transform->setGlobalAngle(rot);
 
 		return e;
 	}

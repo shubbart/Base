@@ -8,6 +8,7 @@ class MenuState : public BaseState
 	Factory factory;
 	unsigned spr_logo;
 	ObjectPool<Entity>::iterator currentCamera;
+	unsigned spr_mouse = sfw::loadTextureMap("../res/target.png");
 public:
 	virtual void init() { spr_logo = sfw::loadTextureMap("../res/menu.png"); };
 	virtual void term() {};
@@ -25,10 +26,11 @@ public:
 	{
 	
 	};
+
 	virtual void draw() 
 	{
 		auto cam = currentCamera->camera->getCameraMatrix(&currentCamera->transform);
-
+		sfw::drawTexture(spr_mouse, sfw::getMouseX(), sfw::getMouseY(), 25, 25, 0.f, true, 0U, RED);
 		for each(auto &e in factory)
 			if (e.transform && e.sprite)
 				e.sprite->draw(&e.transform, cam);
