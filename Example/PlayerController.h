@@ -9,7 +9,7 @@ class PlayerController
 	
 public:
 	
-	float speed = 50, turnSpeed = 3, damage = 0;
+	float speed = 50, turnSpeed = 3, currentHP = 100;
 	
 	vec2 mouse;
 	vec2 getMouse()
@@ -17,15 +17,18 @@ public:
 		return base::vec2{ sfw::getMouseX(), sfw::getMouseY() };
 	}
 
+	float timer = 2;
+
 	float shotTimer = 0.0f;
 	bool shotRequest = false;
 
 	void poll(base::Transform *T, base::Rigidbody *rb, float dt)
 	{
+		
 
 		if (sfw::getKey('W'))
 		{
-			rb->addForce(T->getGlobalUp().up() * speed);
+			rb->addForce(T->getGlobalUp().up() * speed);	
 		}
 
 		if (sfw::getKey('S'))
@@ -49,8 +52,7 @@ public:
 		if (sfw::getMouseButton(MOUSE_BUTTON_LEFT) && shotTimer < 0)
 		{
 			shotRequest = true;
-			shotTimer = 0.85f;
-			damage = 10.f;
+			shotTimer = 0.85f;		
 		}
 		else shotRequest = false;
 	}

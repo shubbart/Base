@@ -9,6 +9,7 @@ namespace base
 class Rigidbody
 {
 public:
+	float HP, damage;
 	float drag, mass;
 	vec2 impulse, force, acceleration, velocity; // defaults to 0's
 

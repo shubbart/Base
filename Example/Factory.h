@@ -55,7 +55,7 @@ public:
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnFireball(unsigned sprite, vec2 pos, vec2 dim, float ang, vec2 impulse, unsigned faction, bool isPlayer = true)
+	ObjectPool<Entity>::iterator spawnFireball(unsigned sprite, vec2 pos, vec2 dim, float ang, vec2 impulse, float damage, unsigned faction, bool isPlayer = true)
 	{
 		auto e = entities.push();
 
@@ -72,7 +72,7 @@ public:
 		e->sprite->sprite_id = sprite;
 		e->sprite->dimensions = vec2{1.2f, 1.2f};
 		
-
+		e->rigidbody->HP = 1;
 		e->rigidbody->addImpulse(impulse);
 
 
@@ -81,12 +81,14 @@ public:
 		{
 			e->transform->setPlayer();
 		}
+		e->transform->isPSpell = true;
+		e->transform->isEnemy = false;
+		e->rigidbody->damage = damage;
 
-		
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite, unsigned font, bool isPlayer = true)
+	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite, unsigned font, bool isPlayer, float health)
 	{
 		auto e = entities.push();
 
@@ -95,20 +97,17 @@ public:
 		e->sprite = sprites.push();
 		e->collider = colliders.push();
 		e->controller = controllers.push();
-		e->text = texts.push();
-
-		e->text->sprite_id = font;
-		e->text->offset = vec2{ -24,-24 };
-		e->text->off_scale = vec2{.5f,.5f};
-		e->text->setString("Player1");
 
 		e->transform->setLocalScale(vec2{48,48});
+		e->rigidbody->HP = health;
 
 		e->sprite->sprite_id = sprite;
 		if (isPlayer == true)
 		{
 			e->transform->setPlayer();
 		}
+
+
 		return e;
 	}
 
@@ -164,7 +163,7 @@ public:
 
 	}
 
-	ObjectPool<Entity>::iterator spawnImp(unsigned sprite, float speed, float health, float range)
+	ObjectPool<Entity>::iterator spawnImp(unsigned sprite, float speed, float maxSpeed, float health, float range, float damage)
 	{
 		auto e = entities.push();
 
@@ -178,9 +177,12 @@ public:
 
 		e->sprite->sprite_id = sprite;
 		e->enemy->speed = speed;
-		e->enemy->health = health;
+		e->enemy->maxSpeed = maxSpeed;
+		e->rigidbody->HP = health;
 		e->enemy->range = range;
-
+		e->transform->isEnemy = true;
+		e->transform->isPlayer = false;
+		e->rigidbody->damage = damage;
 		return e;
 	}
 

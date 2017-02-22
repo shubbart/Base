@@ -31,6 +31,12 @@ public:
 		mat3 glob = C * T->getGlobalTransform() * getDrawMatrix();
 		sfw::drawTextureMatrix3(sprite_id, frame_id, tint, glob.v, 0);
 	}
+
+	void drawMap(const Transform *T, const mat3 &C) const
+	{
+		mat3 glob = C * T->getGlobalTransform() * getDrawMatrix();
+		sfw::drawTextureMatrix3(sprite_id, frame_id, tint, glob.v, 0);
+	}
 };
 
 }

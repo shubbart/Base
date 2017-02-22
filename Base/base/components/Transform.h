@@ -34,17 +34,25 @@ private:
 
 public:
 	bool isPlayer = false;
+	bool isPSpell = false;
+	bool isEnemy = false;
+
 	void setPlayer()
 	{
 		isPlayer = true;
 	}
-	
+
 	void draw(const mat3 &cam) const
 	{
 		auto t = cam * getGlobalTransform();
 
 		debugDrawLine(t.c3.xy, t.c2.xy + t.c3.xy,0x00ff00ff);
 		debugDrawLine(t.c3.xy, t.c1.xy + t.c3.xy,0xff0000ff);
+	}
+
+	vec2 getDir(Transform *T1, Transform *T2)
+	{
+		return vec2 (T2->getGlobalPosition() - T1->getGlobalPosition()).normal();
 	}
 
 	Transform() : m_parent(nullptr), m_localScale(1), m_localAngle(0) { memset(m_children, 0, sizeof(m_children)); }
