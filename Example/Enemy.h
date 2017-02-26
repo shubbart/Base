@@ -35,8 +35,22 @@ public:
 			enemyRB->acceleration.x -= speed;
 		if (enemyT->getGlobalPosition().x < playerT->getGlobalPosition().x)
 			enemyRB->acceleration.x += speed;
-		//if (range > dist.y)
-		//	enemyRB->acceleration.y = 0;
+	}
+
+	float getDirection(vec2 *enemyV, vec2 *playerV)
+	{
+		return acos(enemyV->x * playerV->x + enemyV->y * playerV->y) * 180/PI;
+		//float down = dot((enemyV - playerV), vec2{ 0,-1 });
+		//float up = dot((enemyV - playerV), vec2{ 0,1 });
+		//float left = dot((enemyV - playerV), vec2{ -1,0 });
+		//float right = dot((enemyV - playerV), vec2{ 1,0 });
+
+		//float face = fmaxf(fmaxf(down, up), fmaxf(left, right));
+
+		//if (face = up) return 0;
+		//if (face = down) return 2;
+		//if (face = left) return 1;
+		//if (face = right) return 3;
 	}
 
 

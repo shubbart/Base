@@ -32,15 +32,15 @@ public:
 		spr_fireball = sfw::loadTextureMap("../res/fireball.png",8,8);
 		spr_space = sfw::loadTextureMap("../res/space.jpg");
 		spr_player = sfw::loadTextureMap("../res/player.png", 3, 4);
-		spr_cast = sfw::loadTextureMap("../res/cast.png", 9, 4);
-		spr_death = sfw::loadTextureMap("../res/death.png", 5,5);
+		spr_cast = sfw::loadTextureMap("../res/cast.png", 10, 4);
+		spr_death = sfw::loadTextureMap("../res/death.png", 11);
 		spr_roid = sfw::loadTextureMap("../res/rock.png");
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
 		spr_mouse = sfw::loadTextureMap("../res/target.png");
 		spr_portal = sfw::loadTextureMap("../res/portal.png", 4, 1);
 		spr_imp = sfw::loadTextureMap("../res/imp.png",4,4);
 		spr_impA = sfw::loadTextureMap("../res/imp_attack.png", 4,4);
-		spr_impD = sfw::loadTextureMap("../res/imp_death.png", 4, 1);
+		spr_impD = sfw::loadTextureMap("../res/imp_death.png", 7, 1);
 
 		
 
@@ -123,17 +123,13 @@ public:
 				// Facing and sprite animation
 				if (it != bit && bit->enemy && bit->transform->isEnemy && e.transform && e.transform->isPlayer && !e.transform->isPSpell)
 				{
-					float down = dot(bit->transform->getDir(&bit->transform, &e.transform), vec2{ -1,0 });
-					float up = dot(bit->transform->getDir(&bit->transform, &e.transform), vec2{ 1,0 });
-					float left = dot(bit->transform->getDir(&bit->transform, &e.transform), vec2{ 0,-1 });
-					float right = dot(bit->transform->getDir(&bit->transform, &e.transform), vec2{ 0,1 });
-
-					float face = fmaxf(fmaxf(down, up), fmaxf(left, right));
-					if (face = up) dir = 0;
-					if (face = down) dir = 2;
-					if (face = left) dir = 1;
-					if (face = right) dir = 3;
-
+					float facing = bit->enemy->getDirection(&bit->transform->getGlobalPosition(), &e.transform->getGlobalPosition());			
+					
+					if (facing > 45 && facing < 135) dir = 0; // Up
+					if (facing > 135 && facing < 225) dir = 1; // Left
+					if (facing > 225 && facing < 315) dir = 2; // Down
+					if (facing > 315 && facing < 45) dir = 3; // Right
+					
 					frameTimer += frameRate * dt;
 					frameID = frameTimer;
 					bit->sprite->frame_id = frameID % 4 + dir * 4;
@@ -153,9 +149,17 @@ public:
 					vec2 worldMouse = currentCamera->camera->getScreenPointToWorldPoint(&currentCamera->transform, screenMouse);
 
 					vec2 firingVel = (worldMouse - e.transform->getGlobalPosition()).normal() * 200;
+					
+					frameTimer += frameRate * dt;
+					frameID = frameTimer;
+					e.sprite->sprite_id = spr_cast;
+		
+					e.sprite->frame_id = frameID % 8 + dir * 3;
 
 					factory.spawnFireball(spr_fireball, e.transform->getGlobalPosition(),
 						vec2{ 32,32 }, firingVel.angle(), firingVel, 10, 1, true);
+
+					
 					}
 			}
 
@@ -169,11 +173,28 @@ public:
 
 			if (it->rigidbody && it->rigidbody->HP <= 0)
 			{
-				if (it->enemy)
-					--count;
-				del = true;
-			}
+				if (it->rigidbody && it->rigidbody->HP <= 0)
+				{
+					frameTimer += frameRate * dt;
+					frameID = frameTimer;
 
+					if (it->enemy)
+					{
+						it->sprite->sprite_id = spr_impD;
+						it->sprite->frame_id = frameID % 7 + dir * 0;
+						--count;
+						if(frameID > 6)
+						del = true;
+					}
+					else
+					{
+						it->sprite->sprite_id = spr_death;
+						it->sprite->frame_id = frameID % 11 + dir * 0;
+						if (frameID > 10)
+							del = true;
+					}
+				}
+			}
 
 			// ++ here, because free increments in case of deletions
 			if (!del) it++;

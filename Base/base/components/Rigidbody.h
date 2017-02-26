@@ -88,8 +88,8 @@ inline void DynamicResolution(const collision &cd, Transform *AT, Rigidbody *AR,
 	X = (A*P + B*Q + -E*(A - B)*Q) / (Q + P);
 	Y = E*(A - B) + X;
 
-	AR->velocity = X;
-	BR->velocity = Y;
+	AR->velocity = X /3;
+	BR->velocity = Y /3;
 }
 
 

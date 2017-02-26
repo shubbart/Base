@@ -70,6 +70,7 @@ public:
 		e->transform->setLocalAngle(ang);
 
 		e->sprite->sprite_id = sprite;
+		e->sprite->angle = PI;
 		e->sprite->dimensions = vec2{1.2f, 1.2f};
 		
 		e->rigidbody->HP = 1;
@@ -100,6 +101,7 @@ public:
 
 		e->transform->setLocalScale(vec2{48,48});
 		e->rigidbody->HP = health;
+		e->rigidbody->damage = 10;
 
 		e->sprite->sprite_id = sprite;
 		if (isPlayer == true)
