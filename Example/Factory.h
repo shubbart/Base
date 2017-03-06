@@ -55,6 +55,18 @@ public:
 		return e;
 	}
 
+	ObjectPool<Entity>::iterator spawnFire(unsigned sprite, float x, float y, float w, float h)
+	{
+		auto e = entities.push();
+		e->transform = transforms.push();
+		e->sprite = sprites.push();
+		e->sprite->sprite_id = sprite;
+		e->sprite->dimensions = vec2{ w,h };
+		e->transform->setLocalPosition(vec2{ x,y });
+		e->transform->isFire = true;
+		return e;
+	}
+
 	ObjectPool<Entity>::iterator spawnFireball(unsigned sprite, vec2 pos, vec2 dim, float ang, vec2 impulse, float damage, unsigned faction, bool isPlayer = true)
 	{
 		auto e = entities.push();
@@ -235,28 +247,7 @@ public:
 			e->transform->setPlayer();
 		}
 
-
-		return e;
-	}
-
-
-	ObjectPool<Entity>::iterator spawnAsteroid(unsigned sprite)
-	{
-		auto e = entities.push();
-
-		e->transform = transforms.push();
-		e->rigidbody = rigidbodies.push();
-		e->sprite = sprites.push();
-		e->collider = colliders.push();
-
-		e->transform->setLocalScale(vec2{ 48,48 });
-
-		e->transform->setGlobalPosition(vec2::fromAngle(randRange(0, 360)*DEG2RAD)*(rand01() * 200 + 64));
-
-		e->rigidbody->addSpin(rand01()*12-6);
-
-		e->sprite->sprite_id = sprite;
-
+		e->transform->PlayerIsAlive = true;
 		return e;
 	}
 
@@ -284,18 +275,14 @@ public:
 		e->sprite = sprites.push();
 		e->transform->setLocalScale(vec2{ scaleX,scaleY });
 		e->sprite->sprite_id = sprite_id;
-	//	e->sprite->tint = MAGENTA;
 		e->transform->isPortal = true;
 		e->rigidbody = rigidbodies.push();
 		e->rigidbody->HP = 100;
 
-
-
 		return e;
-
 	}
 
-	ObjectPool<Entity>::iterator spawnImp(unsigned sprite, float speed, float maxSpeed, float health, float range, float damage, float posX, float posY)
+	ObjectPool<Entity>::iterator spawnImp(unsigned sprite, float speed, float maxSpeed, float health, float range, float damage, float posX, float posY, float dimX, float dimY)
 	{
 		auto e = entities.push();
 
@@ -304,7 +291,30 @@ public:
 		e->sprite = sprites.push();
 		e->collider = colliders.push();
 		e->enemy = enemies.push();
-		e->transform->setLocalScale(vec2{ 30,40 });
+		e->transform->setLocalScale(vec2{ dimX, dimY });
+		e->transform->setLocalPosition(vec2{ posX,posY });
+
+		e->sprite->sprite_id = sprite;
+		e->enemy->speed = speed;
+		e->enemy->maxSpeed = maxSpeed;
+		e->rigidbody->HP = health;
+		e->enemy->range = range;
+		e->transform->isEnemy = true;
+		e->transform->isPlayer = false;
+		e->rigidbody->damage = damage;
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnMage(unsigned sprite, float speed, float maxSpeed, float health, float range, float damage, float posX, float posY, float dimX, float dimY)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->collider = colliders.push();
+		e->enemy = enemies.push();
+		e->transform->setLocalScale(vec2{ dimX, dimY });
 		e->transform->setLocalPosition(vec2{ posX,posY });
 
 		e->sprite->sprite_id = sprite;

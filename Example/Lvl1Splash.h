@@ -9,13 +9,15 @@ class Level1Splash : public BaseState
 	unsigned spr_logo;
 	ObjectPool<Entity>::iterator currentCamera;
 	unsigned spr_mouse = sfw::loadTextureMap("../res/target.png");
-	float timer = 0;
-	float timeRate = 1;
+	float timer;
+	float timeRate;
 public:
 	virtual void init() { spr_logo = sfw::loadTextureMap("../res/lvl1splash.png"); };
 	virtual void term() {};
 	virtual void play()
 	{
+		timer = 0;
+		timeRate = 1;
 		factory.spawnStaticImage(spr_logo, 0, 0, 800, 600);
 		currentCamera = factory.spawnCamera(800, 600, 1);
 		currentCamera->transform->setGlobalPosition(vec2{ 400,300 });

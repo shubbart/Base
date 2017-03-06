@@ -3,21 +3,17 @@
 #include "BaseState.h"
 #include "Factory.h"
 
-class IntroState : public BaseState
+class Victory : public BaseState
 {
 	Factory factory;
 	unsigned spr_logo;
 	ObjectPool<Entity>::iterator currentCamera;
 	unsigned spr_mouse = sfw::loadTextureMap("../res/target.png");
-	float timer;
-	float timeRate;
 public:
-	virtual void init() { spr_logo = sfw::loadTextureMap("../res/intro.png"); };
+	virtual void init() { spr_logo = sfw::loadTextureMap("../res/victory.png"); };
 	virtual void term() {};
 	virtual void play()
 	{
-		timer = 0;
-		timeRate = 1;
 		factory.spawnStaticImage(spr_logo, 0, 0, 800, 600);
 		currentCamera = factory.spawnCamera(800, 600, 1);
 		currentCamera->transform->setGlobalPosition(vec2{ 400,300 });
@@ -26,15 +22,14 @@ public:
 
 	virtual size_t next() const
 	{
-		if (sfw::getMouseButton(MOUSE_BUTTON_LEFT) && timer >= 1)
-			return LVL1SPLASH_ENTER;
-		return INTRO;
+		if (sfw::getMouseButton(MOUSE_BUTTON_LEFT))
+			return EXIT;
+		return VICTORY;
 	};
 
 	virtual void step()
 	{
-		float dt = sfw::getDeltaTime();
-		timer += timeRate * dt;
+
 	};
 
 	virtual void draw()
@@ -46,4 +41,5 @@ public:
 				e.sprite->draw(&e.transform, cam);
 	};
 };
+
 

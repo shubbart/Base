@@ -3,7 +3,7 @@
 #include "BaseState.h"
 #include "Factory.h"
 
-class IntroState : public BaseState
+class Level4Splash : public BaseState
 {
 	Factory factory;
 	unsigned spr_logo;
@@ -12,7 +12,7 @@ class IntroState : public BaseState
 	float timer;
 	float timeRate;
 public:
-	virtual void init() { spr_logo = sfw::loadTextureMap("../res/intro.png"); };
+	virtual void init() { spr_logo = sfw::loadTextureMap("../res/lvl4splash.png"); };
 	virtual void term() {};
 	virtual void play()
 	{
@@ -26,9 +26,10 @@ public:
 
 	virtual size_t next() const
 	{
-		if (sfw::getMouseButton(MOUSE_BUTTON_LEFT) && timer >= 1)
-			return LVL1SPLASH_ENTER;
-		return INTRO;
+
+		if (timer >= 3)
+			return LEVEL_4;
+		return LVL4SPLASH;
 	};
 
 	virtual void step()
@@ -46,4 +47,5 @@ public:
 				e.sprite->draw(&e.transform, cam);
 	};
 };
+
 

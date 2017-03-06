@@ -129,13 +129,21 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Factory.h" />
+    <ClInclude Include="Gameover.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Intro.h" />
     <ClInclude Include="Level2.h" />
+    <ClInclude Include="Level3.h" />
+    <ClInclude Include="Level4.h" />
+    <ClInclude Include="Level5.h" />
     <ClInclude Include="Lvl1Splash.h" />
     <ClInclude Include="Lvl2Splash.h" />
+    <ClInclude Include="Lvl3Splash.h" />
+    <ClInclude Include="Lvl4Splash.h" />
+    <ClInclude Include="Lvl5Splash.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="Victory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

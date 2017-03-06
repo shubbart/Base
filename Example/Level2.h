@@ -18,8 +18,8 @@ a series of 'systems.'
 class Level2 : public BaseState
 {
 	Factory factory;
-	unsigned spr_background, spr_player, spr_shield, spr_iceblast, spr_flamerune, spr_demonbolt, spr_explosion, spr_death, spr_fireball, spr_roid, spr_font, spr_mouse,
-		spr_portal, spr_imp, spr_impA, spr_impD;
+	unsigned spr_background, spr_player, spr_shield, spr_iceblast, spr_flamerune, spr_demonbolt, spr_explosion, spr_death, spr_fireball, spr_font, spr_mouse,
+		spr_portal, spr_imp, spr_impA, spr_impD, spr_imp2, spr_imp2D, spr_fire;
 	ObjectPool<Entity>::iterator currentCamera;
 
 public:
@@ -30,6 +30,7 @@ public:
 	int spawnTimer;
 	float duration = 8;
 	float burnRate = 1;
+	bool PlayerAlive = true;
 
 	// Entity stats
 	float impSpd = 25;
@@ -39,6 +40,14 @@ public:
 	float impDmg = 2;
 	float impX = 0;
 	float impY = 250;
+
+	float imp2Spd = 15;
+	float imp2MSpd = 30;
+	float imp2HP = 20;
+	float imp2Range = 5;
+	float imp2Dmg = 8;
+	float imp2X = 0;
+	float imp2Y = 250;
 
 	virtual void init()
 	{
@@ -50,19 +59,21 @@ public:
 		spr_flamerune = sfw::loadTextureMap("../res/flamerune.png", 4, 4);
 		spr_demonbolt = sfw::loadTextureMap("../res/demonbolt.png");
 		spr_explosion = sfw::loadTextureMap("../res/explosion.png", 12);
+		spr_fire = sfw::loadTextureMap("../res/fire.png", 7);
 		spr_death = sfw::loadTextureMap("../res/death.png", 11);
-		spr_roid = sfw::loadTextureMap("../res/rock.png");
 		spr_font = sfw::loadTextureMap("../res/font.png", 32, 4);
 		spr_mouse = sfw::loadTextureMap("../res/target.png");
 		spr_portal = sfw::loadTextureMap("../res/portal.png");
 		spr_imp = sfw::loadTextureMap("../res/imp.png", 4, 4);
 		spr_impA = sfw::loadTextureMap("../res/imp_attack.png", 4, 4);
 		spr_impD = sfw::loadTextureMap("../res/imp_death.png", 7, 1);
+		spr_imp2 = sfw::loadTextureMap("../res/imp2.png", 4, 4);
+		spr_imp2D = sfw::loadTextureMap("../res/imp2_death.png", 7, 1);
 	}
 
 	virtual void play()
 	{
-
+		PlayerAlive = true;
 
 		// delete any old entities sitting around
 		for (auto it = factory.begin(); it != factory.end(); it->onFree(), it.free());
@@ -72,7 +83,7 @@ public:
 		currentCamera->transform->setGlobalPosition(vec2{ 400, 300 });
 
 		// call some spawning functions!
-		factory.spawnStaticImage(spr_background, 0, 0, 800, 600);
+		factory.spawnStaticImage(spr_background, 0, 0, 400, 300);
 
 		factory.spawnPlayer(spr_player, spr_font, true, 100);
 
@@ -82,10 +93,16 @@ public:
 		factory.spawnAsteroid(spr_roid);
 		factory.spawnAsteroid(spr_roid);*/
 
-		count = 2;
+		count = 8;
 		factory.spawnTransform({ 0,0 });
 
 		factory.spawnPortal(spr_portal, 0, 250, 60, 60);
+
+		factory.spawnPortal(spr_portal, 0, 250, 60, 60);
+		factory.spawnFire(spr_fire, 200, 175, 40, 40);
+		factory.spawnFire(spr_fire, -200, 175, 40, 40);
+		factory.spawnFire(spr_fire, 200, -175, 40, 40);
+		factory.spawnFire(spr_fire, -200, -175, 40, 40);
 	}
 
 	virtual void stop()
@@ -113,7 +130,7 @@ public:
 		spawnTimer += 1;
 		if (spawnTimer == 100 || spawnTimer == 200)
 		{
-			factory.spawnImp(spr_imp, impSpd, impMSpd, impHP, impRange, impDmg, impX, impY);
+			factory.spawnImp(spr_imp, impSpd, impMSpd, impHP, impRange, impDmg, impX, impY, 30, 40);
 		}
 
 		pSpawner += 1;
@@ -124,7 +141,27 @@ public:
 
 		if (spawnTimer == 600 || spawnTimer == 700)
 		{
-			factory.spawnImp(spr_imp, impSpd, impMSpd, impHP, impRange, impDmg, 0, -250);
+			factory.spawnImp(spr_imp, impSpd, impMSpd, impHP, impRange, impDmg, 0, -250, 30, 40);
+		}
+
+		if (pSpawner == 1000)
+		{
+			factory.spawnPortal(spr_portal, 250, 0, 60, 60);
+		}
+
+		if (spawnTimer == 1100 || spawnTimer == 1200)
+		{
+			factory.spawnImp(spr_imp2, imp2Spd, imp2MSpd, imp2HP, imp2Range, imp2Dmg, 250, 0, 50, 60);
+		}
+
+		if (pSpawner == 1500)
+		{
+			factory.spawnPortal(spr_portal, -250, 0, 60, 60);
+		}
+
+		if (spawnTimer == 1700 || spawnTimer == 1800)
+		{
+			factory.spawnImp(spr_imp2, imp2Spd, imp2MSpd, imp2HP, imp2Range, imp2Dmg, -250, 0, 50, 60);
 		}
 
 		for (auto it = factory.begin(); it != factory.end();) // no++!
@@ -135,6 +172,14 @@ public:
 							  // rigidbody update
 			if (e.transform && e.rigidbody)
 				e.rigidbody->integrate(&e.transform, dt);
+
+			// Animate fire
+			if (it->transform->isFire == true)
+			{
+				frameTimer += frameRate * dt;
+				frameID = frameTimer;
+				it->sprite->frame_id = frameID % 7 + dir * 0;
+			}
 
 			// AI
 			for (auto bit = factory.begin(); bit != factory.end(); bit++)
@@ -150,14 +195,14 @@ public:
 				{
 					float facing = bit->enemy->getDirection(&bit->transform->getGlobalPosition(), &e.transform->getGlobalPosition());
 
-					if (facing > 45 && facing < 135) dir = 0; // Up
+					/*if (facing > 45 && facing < 135) dir = 0; // Up
 					if (facing > 135 && facing < 225) dir = 1; // Left
 					if (facing > 225 && facing < 315) dir = 2; // Down
-					if (facing > 315 && facing < 45) dir = 3; // Right
+					if (facing > 315 && facing < 45) dir = 3; // Right*/
 
 					frameTimer += frameRate * dt;
 					frameID = frameTimer;
-					bit->sprite->frame_id = frameID % 4 + dir * 4;
+					bit->sprite->frame_id = frameID % 3 + dir * 2;
 				}
 			}
 
@@ -191,7 +236,7 @@ public:
 					vec2 firingVel = (worldMouse - e.transform->getGlobalPosition()).normal() * 75;
 
 					factory.spawnIceblast(spr_iceblast, e.transform->getGlobalPosition(),
-						vec2{ 45,32 }, firingVel.angle(), firingVel, 25, 1, true);
+						vec2{ 45,32 }, firingVel.angle(), firingVel, 15, 1, true);
 				}
 
 				if (e.controller->frRequest) // Flamerune
@@ -239,7 +284,7 @@ public:
 				burnRate -= frameRate * dt;
 				if (burnRate <= 0)
 				{
-					it->rigidbody->HP -= 1;
+					it->rigidbody->HP -= 5;
 					burnRate = 1;
 				}
 				if (duration <= 0)
@@ -255,7 +300,10 @@ public:
 
 				if (it->enemy)
 				{
-					it->sprite->sprite_id = spr_impD;
+					if (it->sprite->sprite_id == spr_imp2)
+						it->sprite->sprite_id = spr_imp2D;
+					if(it->sprite->sprite_id == spr_imp)
+						it->sprite->sprite_id = spr_impD;
 					it->sprite->frame_id = frameID % 7 + dir * 0;
 
 					if (frameID > 6)
@@ -288,6 +336,11 @@ public:
 							it->sprite->tint = CYAN;
 						}
 						it->sprite->frame_id = frameID % 11 + dir * 0;
+						if (it->transform->PlayerIsAlive == true && frameID > 7)
+						{
+							it->transform->PlayerIsAlive = false;
+							PlayerAlive = false;
+						}
 					}
 					if (frameID > 10)
 					{
@@ -338,7 +391,7 @@ public:
 						if (cd.result())
 						{
 							// Iceblast collision
-							if (it->transform->isEnemy == true && bit->transform->isIceblast == true)
+							if (it->transform->isEnemy == true && bit->transform->isIceblast == true && it->transform->isFrozen == false)
 							{
 								it->rigidbody->HP -= bit->rigidbody->damage;
 
@@ -348,7 +401,7 @@ public:
 								continue;
 							}
 
-							if (bit->transform->isEnemy == true && it->transform->isIceblast == true)
+							if (bit->transform->isEnemy == true && it->transform->isIceblast == true && bit->transform->isFrozen == false)
 							{
 								bit->rigidbody->HP -= it->rigidbody->damage;
 
@@ -446,18 +499,27 @@ public:
 
 #endif
 	}
-	//STATES Level2::next()
-	//{
-	//	if (count <= 0)
-	//	{
-	//		for (auto it = factory.begin(); it != factory.end();)
-	//		{
-	//			it->onFree();
-	//			it.free();
-	//		}
-	//		return LEVEL_2;
-	//	}
-	//	else
-	//		return GAME;
-	//}
+	STATES Level2::next()
+	{
+		if (PlayerAlive == false)
+		{
+			for (auto it = factory.begin(); it != factory.end();)
+			{
+				it->onFree();
+				it.free();
+			}
+			return GAMEOVER_ENTER;
+	}
+		if (count <= 0)
+		{
+			for (auto it = factory.begin(); it != factory.end();)
+			{
+				it->onFree();
+				it.free();
+			}
+			return LEVEL_3;
+		}
+		else
+			return LVL_2;
+	}
 };

@@ -13,6 +13,8 @@ public:
 
 	float deg2rad(float deg) { return deg * PI / 180; }
 	float rad2deg(float rad) { return rad * 180 / PI; }
+
+	bool enemyAttack = false;
 	
 	void poll(base::Transform *enemyT, base::Rigidbody *enemyRB, base::Transform *playerT, float dt)
 	{
@@ -27,14 +29,38 @@ public:
 		float angleBetween = acos(dot(enemyT->getGlobalPosition().normal(), playerT->getGlobalPosition().normal()));
 		angleBetween = rad2deg(angleBetween);
 		// Track the player
-		if (enemyT->getGlobalPosition().y > playerT->getGlobalPosition().y )
-			enemyRB->acceleration.y -= speed;
+		if (enemyT->getGlobalPosition().y > playerT->getGlobalPosition().y)
+				enemyRB->acceleration.y -= speed;
 		if (enemyT->getGlobalPosition().y < playerT->getGlobalPosition().y)
-			enemyRB->acceleration.y += speed;
-		if (enemyT->getGlobalPosition().x > playerT->getGlobalPosition().x )
-			enemyRB->acceleration.x -= speed;
+				enemyRB->acceleration.y += speed;
+		if (enemyT->getGlobalPosition().x > playerT->getGlobalPosition().x)
+				enemyRB->acceleration.x -= speed;
 		if (enemyT->getGlobalPosition().x < playerT->getGlobalPosition().x)
-			enemyRB->acceleration.x += speed;
+				enemyRB->acceleration.x += speed;
+		//if (enemyT->getGlobalPosition().y > playerT->getGlobalPosition().y)
+		//	if (dist.y > range)
+		//		enemyRB->acceleration.y -= speed;
+		//	else
+		//		enemyRB->velocity.y = 0;
+		//if (enemyT->getGlobalPosition().y < playerT->getGlobalPosition().y)
+		//	if (dist.y < -range)
+		//	enemyRB->acceleration.y += speed;
+		//	else
+		//		enemyRB->velocity.y = 0;
+		//if (enemyT->getGlobalPosition().x > playerT->getGlobalPosition().x)
+		//	if (dist.y > range)
+		//	enemyRB->acceleration.x -= speed;
+		//	else
+		//		enemyRB->velocity.x = 0;
+		//if (enemyT->getGlobalPosition().x < playerT->getGlobalPosition().x)
+		//	if (dist.y < -range)
+		//	enemyRB->acceleration.x += speed;
+		//	else
+		//		enemyRB->velocity.x = 0;
+
+		//if (enemyRB->velocity.y == 0 || enemyRB->velocity.x == 0)
+		//	enemyAttack = true;
+		//else enemyAttack = false;
 	}
 
 	float getDirection(vec2 *enemyV, vec2 *playerV)

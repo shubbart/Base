@@ -42,6 +42,8 @@ public:
 	bool isRune = false;
 	bool isBurning = false;
 	bool isDB = false;
+	bool PlayerIsAlive = false;
+	bool isFire = false;
 
 	void setPlayer()
 	{
