@@ -34,8 +34,14 @@ private:
 
 public:
 	bool isPlayer = false;
-	bool isPSpell = false;
+	bool isSpell = false;
 	bool isEnemy = false;
+	bool isPortal = false;
+	bool isIceblast = false;
+	bool isFrozen = false;
+	bool isRune = false;
+	bool isBurning = false;
+	bool isDB = false;
 
 	void setPlayer()
 	{

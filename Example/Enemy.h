@@ -7,7 +7,7 @@ class Enemy
 {
 
 public:
-	float maxSpeed, speed = 50.f, range = 0.f;
+	float maxSpeed, speed, range;
 
 	float hInput, vInput = 0.f;
 

@@ -82,10 +82,136 @@ public:
 		{
 			e->transform->setPlayer();
 		}
-		e->transform->isPSpell = true;
+		e->transform->isSpell = true;
 		e->transform->isEnemy = false;
 		e->rigidbody->damage = damage;
 
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnShield(unsigned sprite, vec2 pos, vec2 dim, float damage, unsigned faction, bool isPlayer = true)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->lifetime = lifetimes.push();
+		e->collider = colliders.push();
+
+		e->transform->setLocalPosition(pos);
+		e->transform->setLocalScale(dim);
+
+		e->sprite->sprite_id = sprite;
+
+		e->rigidbody->HP = 20;
+		e->rigidbody->mass = 500;
+
+		e->lifetime->lifespan = 4.f;
+		if (isPlayer == true)
+		{
+			e->transform->setPlayer();
+		}
+		e->transform->isSpell = true;
+		e->rigidbody->damage = damage;
+
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnIceblast(unsigned sprite, vec2 pos, vec2 dim, float ang, vec2 impulse, float damage, unsigned faction, bool isPlayer = true)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->lifetime = lifetimes.push();
+		e->collider = colliders.push();
+
+		e->transform->setLocalPosition(pos);
+		e->transform->setLocalScale(dim);
+		e->transform->setLocalAngle(ang);
+
+		e->sprite->sprite_id = sprite;
+		e->sprite->dimensions = vec2{ 1.2f, 1.2f };
+
+		e->rigidbody->HP = 1;
+		e->rigidbody->addImpulse(impulse);
+
+
+		e->lifetime->lifespan = 3.5f;
+		if (isPlayer == true)
+		{
+			e->transform->setPlayer();
+		}
+		e->transform->isSpell = true;
+		e->transform->isEnemy = false;
+		e->rigidbody->damage = damage;
+
+		e->transform->isIceblast = true;
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnFR(unsigned sprite, vec2 pos, vec2 dim, unsigned faction, bool isPlayer = true)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->lifetime = lifetimes.push();
+		e->collider = colliders.push();
+
+		e->transform->setLocalPosition(pos);
+		e->transform->setLocalScale(dim);
+		e->sprite->dimensions = vec2{ 1.2f, 1.2f };
+		e->sprite->tint = RED;
+
+		e->sprite->sprite_id = sprite;
+
+		e->rigidbody->HP = 1;
+
+		e->lifetime->lifespan = 5.f;
+		if (isPlayer == true)
+		{
+			e->transform->setPlayer();
+		}
+		e->transform->isSpell = true;
+		e->transform->isRune = true;
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnDB(unsigned sprite, vec2 pos, vec2 dim, float ang, vec2 impulse, float damage, unsigned faction, bool isPlayer = true)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->lifetime = lifetimes.push();
+		e->collider = colliders.push();
+
+		e->transform->setLocalPosition(pos);
+		e->transform->setLocalScale(dim);
+		e->transform->setLocalAngle(ang);
+
+		e->sprite->sprite_id = sprite;
+		e->sprite->tint = GREEN;
+		e->sprite->dimensions = vec2{ 3.0f, 3.0f };
+
+		e->rigidbody->HP = 1;
+		e->rigidbody->addImpulse(impulse);
+
+
+		e->lifetime->lifespan = 2.0f;
+		if (isPlayer == true)
+		{
+			e->transform->setPlayer();
+		}
+		e->transform->isSpell = true;
+		e->transform->isEnemy = false;
+		e->rigidbody->damage = damage;
+		e->transform->isDB = true;
 		return e;
 	}
 
@@ -145,27 +271,31 @@ public:
 		e->transform->setLocalScale( vec2{25,25});
 		e->sprite->sprite_id = sprite_id;
 
-
 		return e;
 
 	}
 
-	ObjectPool<Entity>::iterator spawnPortal(unsigned sprite_id)
+	ObjectPool<Entity>::iterator spawnPortal(unsigned sprite_id, float posX, float posY, float scaleX, float scaleY)
 	{
 		auto e = entities.push();
 
 		e->transform = transforms.push();
+		e->transform->setLocalPosition(vec2{ posX,posY });
 		e->sprite = sprites.push();
-		e->controller = controllers.push();
-		e->transform->setLocalScale(vec2{ 25,25 });
+		e->transform->setLocalScale(vec2{ scaleX,scaleY });
 		e->sprite->sprite_id = sprite_id;
+	//	e->sprite->tint = MAGENTA;
+		e->transform->isPortal = true;
+		e->rigidbody = rigidbodies.push();
+		e->rigidbody->HP = 100;
+
 
 
 		return e;
 
 	}
 
-	ObjectPool<Entity>::iterator spawnImp(unsigned sprite, float speed, float maxSpeed, float health, float range, float damage)
+	ObjectPool<Entity>::iterator spawnImp(unsigned sprite, float speed, float maxSpeed, float health, float range, float damage, float posX, float posY)
 	{
 		auto e = entities.push();
 
@@ -175,7 +305,7 @@ public:
 		e->collider = colliders.push();
 		e->enemy = enemies.push();
 		e->transform->setLocalScale(vec2{ 30,40 });
-		e->transform->setGlobalPosition(vec2::fromAngle(randRange(0, 360)*DEG2RAD)*(rand01() * 200 + 64));
+		e->transform->setLocalPosition(vec2{ posX,posY });
 
 		e->sprite->sprite_id = sprite;
 		e->enemy->speed = speed;

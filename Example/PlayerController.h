@@ -20,7 +20,15 @@ public:
 	float timer = 2;
 
 	float shotTimer = 0.0f;
+	float shieldCD = 0;
+	float iceblastCD = 0;
+	float flameruneCD = 0;
+	float demonboltCD = 0;
 	bool shotRequest = false;
+	bool shieldRequest = false;
+	bool ibRequest = false;
+	bool frRequest = false;
+	bool dbRequest = false;
 
 	void poll(base::Transform *T, base::Rigidbody *rb, float dt)
 	{
@@ -55,6 +63,40 @@ public:
 			shotTimer = 0.85f;		
 		}
 		else shotRequest = false;
+
+
+		shieldCD -= dt;
+		if (sfw::getMouseButton(MOUSE_BUTTON_RIGHT) && shieldCD <= 0)
+		{
+			shieldRequest = true;
+			shieldCD = 8;
+		}
+		else shieldRequest = false;
+
+		iceblastCD -= dt;
+		if (sfw::getKey('Q') && iceblastCD <= 0)
+		{
+			ibRequest = true;
+			iceblastCD = 5;
+		}
+		else ibRequest = false;
+
+		flameruneCD -= dt;
+		if (sfw::getKey('E') && flameruneCD <= 0)
+		{
+			frRequest = true;
+			flameruneCD = 6;
+		}
+		else frRequest = false;
+
+		demonboltCD -= dt;
+		if (sfw::getKey('F') && demonboltCD <= 0)
+		{
+			dbRequest = true;
+			demonboltCD = 10;
+		}
+		else dbRequest = false;
+
 	}
 
 

@@ -20,7 +20,12 @@ public:
 	};
 	virtual void stop() {};
 
-	virtual size_t next() const {return MENU;};
+	virtual size_t next() const 
+	{
+		if (sfw::getMouseButton(MOUSE_BUTTON_LEFT))
+			return INTRO_ENTER;
+		return MENU;
+	};
 
 	virtual void step() 
 	{
