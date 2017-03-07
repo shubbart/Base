@@ -48,6 +48,7 @@ void main()
 	 // called once
 	go.init();
 	ms.init();
+	vs.init();
 	is.init();
 	lvls1.init();
 	lvls2.init();
@@ -166,6 +167,7 @@ void main()
 			vs.draw();
 			vs.next();
 			curState = (STATES)vs.next();
+			break;
 		case EXIT:
 			term = true;
 			break;			

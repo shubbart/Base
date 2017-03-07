@@ -9,11 +9,15 @@ class Gameover : public BaseState
 	unsigned spr_logo;
 	ObjectPool<Entity>::iterator currentCamera;
 	unsigned spr_mouse = sfw::loadTextureMap("../res/target.png");
+	float timer;
+	float timeRate;
 public:
 	virtual void init() { spr_logo = sfw::loadTextureMap("../res/gameover.png"); };
 	virtual void term() {};
 	virtual void play()
 	{
+		timer = 0;
+		timeRate = 1;
 		factory.spawnStaticImage(spr_logo, 0, 0, 800, 600);
 		currentCamera = factory.spawnCamera(800, 600, 1);
 		currentCamera->transform->setGlobalPosition(vec2{ 400,300 });
@@ -24,14 +28,15 @@ public:
 	{
 		//if (sfw::getMouseButton(MOUSE_BUTTON_LEFT))
 		//	return INTRO_ENTER;
-		if (sfw::getMouseButton(MOUSE_BUTTON_RIGHT))
+		if (sfw::getMouseButton(MOUSE_BUTTON_RIGHT) && timer >= 1)
 			return EXIT;
 		return GAMEOVER;
 	};
 
 	virtual void step()
 	{
-
+		float dt = sfw::getDeltaTime();
+		timer += timeRate * dt;
 	};
 
 	virtual void draw()

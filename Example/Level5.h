@@ -115,6 +115,7 @@ public:
 		factory.spawnAsteroid(spr_roid);*/
 
 		count = 23;
+		
 		factory.spawnTransform({ 0,0 });
 
 		factory.spawnFire(spr_fire, 200, 175, 40, 40);
@@ -631,7 +632,7 @@ public:
 				it->onFree();
 				it.free();
 			}
-			return VICTORY;
+			return VICTORY_ENTER;
 		}
 		else
 			return LVL_5;
