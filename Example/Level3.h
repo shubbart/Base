@@ -562,7 +562,7 @@ public:
 				it->onFree();
 				it.free();
 			}
-			return LEVEL_4;
+			return LVL4SPLASH_ENTER;
 		}
 		else
 			return LVL_3;

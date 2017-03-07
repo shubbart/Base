@@ -18,7 +18,7 @@
 class GameState : public BaseState
 {
 	Factory factory;
-	unsigned spr_background, spr_player, spr_shield, spr_iceblast, spr_flamerune, spr_demonbolt, spr_explosion, spr_death, spr_fireball, spr_roid, spr_font, spr_mouse,
+	unsigned spr_background, spr_player, spr_shield, spr_iceblast, spr_flamerune, spr_demonbolt, spr_explosion, spr_death, spr_fireball, spr_font, spr_mouse,
 			 spr_portal, spr_imp, spr_impA, spr_impD, spr_fire;
 	ObjectPool<Entity>::iterator currentCamera;
 
@@ -55,7 +55,6 @@ public:
 		spr_explosion = sfw::loadTextureMap("../res/explosion.png", 12);
 		spr_fire = sfw::loadTextureMap("../res/fire.png", 7);
 		spr_death = sfw::loadTextureMap("../res/death.png", 11);
-		spr_roid = sfw::loadTextureMap("../res/rock.png");
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
 		spr_mouse = sfw::loadTextureMap("../res/target.png");
 		spr_portal = sfw::loadTextureMap("../res/portal.png");

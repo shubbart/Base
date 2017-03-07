@@ -127,6 +127,7 @@ public:
 		unsigned dir = 0;
 		unsigned frameID;
 
+		std::cout << count << std::endl;
 		spawnTimer += 1;
 		if (spawnTimer == 100 || spawnTimer == 200)
 		{
@@ -509,7 +510,7 @@ public:
 				it.free();
 			}
 			return GAMEOVER_ENTER;
-	}
+		}
 		if (count <= 0)
 		{
 			for (auto it = factory.begin(); it != factory.end();)
@@ -517,7 +518,7 @@ public:
 				it->onFree();
 				it.free();
 			}
-			return LEVEL_3;
+			return LVL3SPLASH_ENTER;
 		}
 		else
 			return LVL_2;

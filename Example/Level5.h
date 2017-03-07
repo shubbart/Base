@@ -171,7 +171,7 @@ public:
 
 		if (spawnTimer == 1000 || spawnTimer == 1050 || spawnTimer == 1100)
 		{
-			factory.spawnImp(spr_imp, impSpd, impMSpd, impHP, impRange, impDmg, 0, -250, 30, 40);
+			factory.spawnImp(spr_imp, impSpd, impMSpd, impHP, impRange, impDmg, 250, 0, 30, 40);
 		}
 
 		if (pSpawner == 950)
@@ -191,7 +191,7 @@ public:
 
 		if (spawnTimer == 1300 || spawnTimer == 1400)
 		{
-			factory.spawnImp(spr_imp2, imp2Spd, imp2MSpd, imp2HP, imp2Range, imp2Dmg, -250, 250, 30, 40);
+			factory.spawnImp(spr_imp2, imp2Spd, imp2MSpd, imp2HP, imp2Range, imp2Dmg, -250, 250, 50, 60);
 		}
 
 		if (pSpawner == 1200)
@@ -201,28 +201,28 @@ public:
 
 		if (spawnTimer == 1300 || spawnTimer == 1400)
 		{
-			factory.spawnImp(spr_imp2, imp2Spd, imp2MSpd, imp2HP, imp2Range, imp2Dmg, 250, -250, 30, 40);
+			factory.spawnImp(spr_imp2, imp2Spd, imp2MSpd, imp2HP, imp2Range, imp2Dmg, 250, -250, 50, 60);
 		}
 
 
 		if (pSpawner == 1600)
 		{
-			factory.spawnPortal(spr_portal, 250, -250, 60, 60);
+			factory.spawnPortal(spr_portal, -250, -250, 60, 60);
 		}
 
 		if (spawnTimer == 1700 || spawnTimer == 1800)
 		{
-			factory.spawnMage(spr_mage, mageSpd, mageMSpd, mageHP, mageRange, mageDmg, -250, -250, 30, 40);
+			factory.spawnMage(spr_mage, mageSpd, mageMSpd, mageHP, mageRange, mageDmg, 250, -250, 50, 60);
 		}
 
 		if (pSpawner == 1600)
 		{
-			factory.spawnPortal(spr_portal, 250, -250, 60, 60);
+			factory.spawnPortal(spr_portal, 250, 250, 60, 60);
 		}
 
 		if (spawnTimer == 1700 || spawnTimer == 1800)
 		{
-			factory.spawnImp(spr_mage, mageSpd, mageMSpd, mageHP, mageRange, mageDmg, 250, 250, 30, 40);
+			factory.spawnImp(spr_mage, mageSpd, mageMSpd, mageHP, mageRange, mageDmg, 250, 250, 50, 60);
 		}
 
 		if (pSpawner == 2000)
@@ -242,7 +242,7 @@ public:
 
 		if (spawnTimer == 2100 || spawnTimer == 2200)
 		{
-			factory.spawnImp(spr_imp, impSpd, impMSpd, impHP, impRange, impDmg, 250, -250, 30, 40);
+			factory.spawnImp(spr_imp, impSpd, impMSpd, impHP, impRange, impDmg, -250, -250, 30, 40);
 		}
 
 		if (pSpawner == 2000)

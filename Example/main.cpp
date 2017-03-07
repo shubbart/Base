@@ -107,7 +107,7 @@ void main()
 		case LVL_2:
 			lvl2.step();
 			lvl2.draw();
-			curState = LVL_2;
+			curState = (STATES)lvl2.next();
 			break;
 		case LVL3SPLASH_ENTER:
 			lvls3.play();
@@ -121,7 +121,7 @@ void main()
 		case LVL_3:
 			lvl3.step();
 			lvl3.draw();
-			curState = LVL_3;
+			curState = (STATES)lvl3.next();;
 			break;
 		case LVL4SPLASH_ENTER:
 			lvls4.play();
@@ -135,7 +135,7 @@ void main()
 		case LVL_4:
 			lvl4.step();
 			lvl4.draw();
-			curState = LVL_4;
+			curState = (STATES)lvl4.next();;
 			break;
 		case LVL5SPLASH_ENTER:
 			lvls5.play();
@@ -149,7 +149,7 @@ void main()
 		case LVL_5:
 			lvl5.step();
 			lvl5.draw();
-			curState = LVL_5;
+			curState = (STATES)lvl5.next();;
 			break;
 		case GAMEOVER_ENTER:
 			go.play();
