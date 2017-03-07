@@ -27,7 +27,7 @@ public:
 	virtual size_t next() const
 	{
 		if (sfw::getMouseButton(MOUSE_BUTTON_LEFT) && timer >= 1)
-			return LVL2SPLASH_ENTER;
+			return LVL1SPLASH_ENTER;
 		return INTRO;
 	};
 
